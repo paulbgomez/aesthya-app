@@ -50,4 +50,14 @@ class User extends Authenticatable
             'two_factor_confirmed_at' => 'datetime',
         ];
     }
+
+    public function moodboards()
+    {
+        return $this->hasMany(Moodboard::class);
+    }
+
+    public function favorites()
+    {
+        return $this->hasMany(UserFavorite::class);
+    }
 }
