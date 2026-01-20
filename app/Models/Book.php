@@ -21,14 +21,4 @@ class Book extends Model
         'tags' => AsCollection::class,
         'metadata' => AsArrayObject::class,
     ];
-
-    public function favorites()
-    {
-        return $this->hasMany(UserFavorite::class);
-    }
-
-    public function isFavoritedBy($userId)
-    {
-        return $this->favorites()->where('user_id', $userId)->exists();
-    }
 }
