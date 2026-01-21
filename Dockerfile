@@ -79,6 +79,10 @@ RUN apt-get update && apt-get install -y \
 # Enable Apache modules
 RUN a2enmod rewrite && a2enmod headers
 
+# Install Composer in final container
+RUN curl -sS https://getcomposer.org/installer | php \
+    && mv composer.phar /usr/local/bin/composer
+
 # Copy Apache configuration
 COPY apache.conf /etc/apache2/sites-available/000-default.conf
 
