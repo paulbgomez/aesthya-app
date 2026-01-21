@@ -1,5 +1,6 @@
 services:
   server:
+    container_name: aesthya_app
     build:
       context: .
     ports:
@@ -20,8 +21,8 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
-    expose:
-      - 5432
+    ports:
+      - 5433:5432
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "postgres" ]
       interval: 10s

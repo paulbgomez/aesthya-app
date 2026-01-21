@@ -25,7 +25,7 @@ WORKDIR /app
 RUN --mount=type=bind,source=composer.json,target=composer.json \
     --mount=type=bind,source=composer.lock,target=composer.lock \
     --mount=type=cache,target=/tmp/cache \
-    composer install --no-dev --no-interaction --no-scripts
+    composer install --no-interaction --no-scripts
 
 ################################################################################
 
@@ -69,6 +69,18 @@ FROM php:8.4-apache as final
 # Use the default production configuration for PHP runtime arguments, see
 # https://github.com/docker-library/docs/tree/master/php#configuration
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
+# Install PHP extensions
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    && docker-php-ext-install pdo_pgsql \
+    && rm -rf /var/lib/apt/lists/*
+
+# Enable Apache modules
+RUN a2enmod rewrite && a2enmod headers
+
+# Copy Apache configuration
+COPY apache.conf /etc/apache2/sites-available/000-default.conf
 
 # Copy the app dependencies from the previous install stage.
 COPY --from=deps app/vendor/ /var/www/html/vendor
