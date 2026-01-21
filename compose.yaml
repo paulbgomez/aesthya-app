@@ -1,3 +1,7 @@
+x-environment: &environment
+  EXTRA: 1
+  TZ: 'Europe/Amsterdam'
+
 services:
   server:
     container_name: aesthya_app
@@ -9,6 +13,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
   db:
     image: postgres
     env_file: .env
@@ -28,8 +33,20 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: aesthya_cache
+    env_file: .env
+    ports:
+      - 6379:6379
+    volumes:
+      - redis-data:/data
+
 volumes:
   db-data:
+  redis-data:
+
 secrets:
   db-password:
     file: db/password.txt
