@@ -38,3 +38,9 @@ export interface User {
 }
 
 export type BreadcrumbItemType = BreadcrumbItem;
+
+export interface FeelingType {
+    id: number;
+    name: string;
+    description: string;
+}

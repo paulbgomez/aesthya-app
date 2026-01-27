@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Support\Facades\Cache;
+use App\Http\Controllers\Feelings\FeelingsController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -15,7 +15,8 @@ Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Cache::put('test', 'Redis is working!', 60);
-dd(Cache::get('test'));
+Route::get('feelings', [FeelingsController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('feelings');
 
 require __DIR__.'/settings.php';
