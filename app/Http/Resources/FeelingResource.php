@@ -13,6 +13,9 @@ class FeelingResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
+            'color' => $this->color,
+            'energyAxis' => $this->energy_axis,
+            'pleasantnessAxis' => $this->pleasantness_axis,
         ];
     }
 }
