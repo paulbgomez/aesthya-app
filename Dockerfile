@@ -18,6 +18,9 @@ WORKDIR /app
 # into this layer.
 # COPY . .
 
+RUN docker-php-ext-install pcntl && \
+    docker-php-ext-enable pcntl
+
 # Download dependencies as a separate step to take advantage of Docker's caching.
 # Leverage a bind mounts to composer.json and composer.lock to avoid having to copy them
 # into this layer.
@@ -40,6 +43,10 @@ RUN --mount=type=bind,source=composer.json,target=composer.json \
 # If reproducibility is important, consider using a specific digest SHA, like
 # php@sha256:99cede493dfd88720b610eb8077c8688d3cca50003d76d1d539b0efc8cca72b4.
 FROM php:8.4-apache as final
+
+# Install and enable pcntl extension
+RUN docker-php-ext-install pcntl && \
+    docker-php-ext-enable pcntl
 
 # Your PHP application may require additional PHP extensions to be installed
 # manually. For detailed instructions for installing extensions can be found, see

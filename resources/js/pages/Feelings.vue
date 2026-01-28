@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { Head } from '@inertiajs/vue3';
-
+import { computed, ref } from 'vue';
+import { Head, router } from '@inertiajs/vue3';
 import AppLayout from '@/layouts/AppLayout.vue';
 import FeelingBubble from '@/components/FeelingBubble.vue';
 import { EnergyAxis, FeelingType, PleasantnessAxis } from '@/types/feeling';
@@ -19,6 +18,7 @@ const emit = defineEmits<{
 const store = useFeelingStore();
 const { setSelectedFeeling, clearSelection } = store;
 const selectedFeeling = computed(() => store.selectedFeeling);
+const isGenerating = ref(false);
 
 const clipShapes = [
     'polygon(20% 0%, 80% 0%, 100% 50%, 80% 100%, 20% 100%, 0% 50%)', // hexagon
@@ -83,13 +83,32 @@ const feelingsWithClipPaths = computed(() => {
     };
 });
 
-const handleSelect = (feeling: FeelingType & { id: number; finalShape: string; fillColor: string }) => {
+const handleSelect = (feeling: FeelingType) => {
     if (selectedFeeling.value?.id === feeling.id) {
         clearSelection();
     } else {
-        setSelectedFeeling(feeling as FeelingType & { id: number });
+        setSelectedFeeling(feeling as FeelingType);
         emit('select', feeling);
     }
+};
+
+const handleCurateMoodboard = () => {
+    if (!selectedFeeling.value?.id) return;
+
+    isGenerating.value = true;
+    
+    router.post(
+        '/feelings/generate-content',
+        { feeling_id: selectedFeeling.value.id },
+        {
+            onSuccess: () => {
+                isGenerating.value = false;
+            },
+            onError: () => {
+                isGenerating.value = false;
+            },
+        }
+    );
 };
 </script>
 
@@ -148,11 +167,11 @@ const handleSelect = (feeling: FeelingType & { id: number; finalShape: string; f
 
                     <div class="rounded-lg border border-slate-800/60 p-3">
                         <p class="mb-3 text-xs uppercase tracking-wide text-slate-400">
-                            Low Energy · Pleasant
+                            Low Energy · Unpleasant
                         </p>
                         <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
                             <FeelingBubble
-                                v-for="feeling in feelingsWithClipPaths.lowPleasant"
+                                v-for="feeling in feelingsWithClipPaths.lowUnpleasant"
                                 :key="feeling.id"
                                 :feeling="feeling"
                                 :is-selected="feeling.isSelected"
@@ -163,11 +182,11 @@ const handleSelect = (feeling: FeelingType & { id: number; finalShape: string; f
 
                     <div class="rounded-lg border border-slate-800/60 p-3">
                         <p class="mb-3 text-xs uppercase tracking-wide text-slate-400">
-                            Low Energy · Unpleasant
+                            Low Energy · Pleasant
                         </p>
                         <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
                             <FeelingBubble
-                                v-for="feeling in feelingsWithClipPaths.lowUnpleasant"
+                                v-for="feeling in feelingsWithClipPaths.lowPleasant"
                                 :key="feeling.id"
                                 :feeling="feeling"
                                 :is-selected="feeling.isSelected"
@@ -182,9 +201,23 @@ const handleSelect = (feeling: FeelingType & { id: number; finalShape: string; f
                 v-if="selectedFeeling"
                 class="rounded-xl border border-slate-800 bg-slate-900 p-6"
             >
-                <p class="text-base text-white">
-                    {{ selectedFeeling.description || 'No description available.' }}
-                </p>
+                <div class="flex items-start justify-between gap-4">
+                    <div class="flex-1">
+                        <h3 class="mb-2 text-lg font-semibold text-white">
+                            {{ selectedFeeling.name }}
+                        </h3>
+                        <p class="text-base text-slate-300">
+                            {{ selectedFeeling.description || 'No description available.' }}
+                        </p>
+                    </div>
+                    <button
+                        @click="handleCurateMoodboard"
+                        :disabled="isGenerating"
+                        class="shrink-0 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {{ isGenerating ? 'Generating...' : 'Curate Moodboard' }}
+                    </button>
+                </div>
             </div>
         </section>
     </AppLayout>

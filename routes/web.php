@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Feelings\FeelingsController;
+use App\Http\Controllers\Feelings\GenerateContentController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -20,6 +21,8 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     // Feelings Routes
     Route::get('feelings', [FeelingsController::class, 'index'])
         ->name('feelings.index');
+    Route::post('feelings/generate-content', [GenerateContentController::class, 'generate'])
+        ->name('feelings.generate-content');
 });
 
 require __DIR__.'/settings.php';

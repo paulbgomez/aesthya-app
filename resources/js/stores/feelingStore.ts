@@ -3,9 +3,9 @@ import { ref } from 'vue';
 import type { FeelingType } from '@/types/feeling';
 
 export const useFeelingStore = defineStore('feeling', () => {
-    const selectedFeeling = ref<(FeelingType & { id: number }) | null>(null);
+    const selectedFeeling = ref<FeelingType | null>(null);
 
-    const setSelectedFeeling = (feeling: (FeelingType & { id: number }) | null) => {
+    const setSelectedFeeling = (feeling: FeelingType) => {
         selectedFeeling.value = feeling;
     };
 
