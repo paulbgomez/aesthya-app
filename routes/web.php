@@ -11,12 +11,15 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-Route::get('dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::group(['middleware' => ['auth', 'verified']], function () {
+    // Dashboard Route    
+    Route::get('dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->name('dashboard');
 
-Route::get('feelings', [FeelingsController::class, 'index'])
-    ->middleware(['auth', 'verified'])
-    ->name('feelings');
+    // Feelings Routes
+    Route::get('feelings', [FeelingsController::class, 'index'])
+        ->name('feelings.index');
+});
 
 require __DIR__.'/settings.php';
