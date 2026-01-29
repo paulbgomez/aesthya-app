@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1d615cb8f69514ca6435e4f7251ef79c",
+    "content-hash": "e91ac8f7f7a07c00e31811db38ca91ef",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -189,6 +189,70 @@
                 }
             ],
             "time": "2024-02-09T16:56:22+00:00"
+        },
+        {
+            "name": "czproject/git-php",
+            "version": "v4.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/czproject/git-php.git",
+                "reference": "1f1ecc92aea9ee31120f4f5b759f5aa947420b0a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/czproject/git-php/zipball/1f1ecc92aea9ee31120f4f5b759f5aa947420b0a",
+                "reference": "1f1ecc92aea9ee31120f4f5b759f5aa947420b0a",
+                "shasum": ""
+            },
+            "require": {
+                "php": "8.0 - 8.5"
+            },
+            "require-dev": {
+                "nette/tester": "^2.5"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Jan Pecha",
+                    "email": "janpecha@email.cz"
+                }
+            ],
+            "description": "Library for work with Git repository in PHP.",
+            "keywords": [
+                "git"
+            ],
+            "support": {
+                "issues": "https://github.com/czproject/git-php/issues",
+                "source": "https://github.com/czproject/git-php/tree/v4.6.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/janpecha",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.janpecha.cz/donate/git-php/",
+                    "type": "other"
+                },
+                {
+                    "url": "https://donate.stripe.com/7sIcO2a9maTSg2A9AA",
+                    "type": "stripe"
+                },
+                {
+                    "url": "https://thanks.dev/u/gh/czproject",
+                    "type": "thanks.dev"
+                }
+            ],
+            "time": "2025-11-10T07:24:07+00:00"
         },
         {
             "name": "dasprid/enum",
@@ -1228,6 +1292,46 @@
             "time": "2026-01-13T15:29:20+00:00"
         },
         {
+            "name": "knplabs/php-json-schema",
+            "version": "v0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/KnpLabs/php-json-schema.git",
+                "reference": "97a06f0124e958eba8c76d011bdf3f5e72a9af20"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/KnpLabs/php-json-schema/zipball/97a06f0124e958eba8c76d011bdf3f5e72a9af20",
+                "reference": "97a06f0124e958eba8c76d011bdf3f5e72a9af20",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "KnpLabs\\JsonSchema\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Knp Labs",
+                    "email": "hello@knplabs.com"
+                }
+            ],
+            "description": "PHP json-schema implementation",
+            "support": {
+                "issues": "https://github.com/KnpLabs/php-json-schema/issues",
+                "source": "https://github.com/KnpLabs/php-json-schema/tree/v0.1.0"
+            },
+            "time": "2022-10-31T10:01:54+00:00"
+        },
+        {
             "name": "laravel/fortify",
             "version": "v1.33.0",
             "source": {
@@ -1511,85 +1615,6 @@
                 "source": "https://github.com/laravel/framework"
             },
             "time": "2026-01-13T15:29:06+00:00"
-        },
-        {
-            "name": "laravel/horizon",
-            "version": "v5.43.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/laravel/horizon.git",
-                "reference": "2a04285ba83915511afbe987cbfedafdc27fd2de"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/laravel/horizon/zipball/2a04285ba83915511afbe987cbfedafdc27fd2de",
-                "reference": "2a04285ba83915511afbe987cbfedafdc27fd2de",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "ext-pcntl": "*",
-                "ext-posix": "*",
-                "illuminate/contracts": "^9.21|^10.0|^11.0|^12.0",
-                "illuminate/queue": "^9.21|^10.0|^11.0|^12.0",
-                "illuminate/support": "^9.21|^10.0|^11.0|^12.0",
-                "nesbot/carbon": "^2.17|^3.0",
-                "php": "^8.0",
-                "ramsey/uuid": "^4.0",
-                "symfony/console": "^6.0|^7.0",
-                "symfony/error-handler": "^6.0|^7.0",
-                "symfony/polyfill-php83": "^1.28",
-                "symfony/process": "^6.0|^7.0"
-            },
-            "require-dev": {
-                "mockery/mockery": "^1.0",
-                "orchestra/testbench": "^7.55|^8.36|^9.15|^10.8",
-                "phpstan/phpstan": "^1.10|^2.0",
-                "predis/predis": "^1.1|^2.0|^3.0"
-            },
-            "suggest": {
-                "ext-redis": "Required to use the Redis PHP driver.",
-                "predis/predis": "Required when not using the Redis PHP driver (^1.1|^2.0|^3.0)."
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "aliases": {
-                        "Horizon": "Laravel\\Horizon\\Horizon"
-                    },
-                    "providers": [
-                        "Laravel\\Horizon\\HorizonServiceProvider"
-                    ]
-                },
-                "branch-alias": {
-                    "dev-master": "6.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Laravel\\Horizon\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Taylor Otwell",
-                    "email": "taylor@laravel.com"
-                }
-            ],
-            "description": "Dashboard and code-driven configuration for Laravel queues.",
-            "keywords": [
-                "laravel",
-                "queue"
-            ],
-            "support": {
-                "issues": "https://github.com/laravel/horizon/issues",
-                "source": "https://github.com/laravel/horizon/tree/v5.43.0"
-            },
-            "time": "2026-01-15T15:10:56+00:00"
         },
         {
             "name": "laravel/prompts",
@@ -2463,6 +2488,50 @@
             "time": "2026-01-15T06:54:53+00:00"
         },
         {
+            "name": "logiscape/mcp-sdk-php",
+            "version": "v1.2.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/logiscape/mcp-sdk-php.git",
+                "reference": "3a221c251045a1c19cc88def19b8f4c1d7fc2923"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/logiscape/mcp-sdk-php/zipball/3a221c251045a1c19cc88def19b8f4c1d7fc2923",
+                "reference": "3a221c251045a1c19cc88def19b8f4c1d7fc2923",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": ">=8.1",
+                "psr/log": "^2.0 ||^3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^10.0"
+            },
+            "suggest": {
+                "ext-pcntl": "For better process handling in CLI environments",
+                "monolog/monolog": "^3.0 - For debugging and logging capabilities"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Mcp\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Model Context Protocol SDK for PHP",
+            "support": {
+                "issues": "https://github.com/logiscape/mcp-sdk-php/issues",
+                "source": "https://github.com/logiscape/mcp-sdk-php/tree/v1.2.6"
+            },
+            "time": "2025-11-20T07:55:22+00:00"
+        },
+        {
             "name": "monolog/monolog",
             "version": "3.10.0",
             "source": {
@@ -2970,6 +3039,84 @@
             "time": "2025-11-20T02:34:59+00:00"
         },
         {
+            "name": "nyholm/psr7",
+            "version": "1.8.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Nyholm/psr7.git",
+                "reference": "a71f2b11690f4b24d099d6b16690a90ae14fc6f3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Nyholm/psr7/zipball/a71f2b11690f4b24d099d6b16690a90ae14fc6f3",
+                "reference": "a71f2b11690f4b24d099d6b16690a90ae14fc6f3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2",
+                "psr/http-factory": "^1.0",
+                "psr/http-message": "^1.1 || ^2.0"
+            },
+            "provide": {
+                "php-http/message-factory-implementation": "1.0",
+                "psr/http-factory-implementation": "1.0",
+                "psr/http-message-implementation": "1.0"
+            },
+            "require-dev": {
+                "http-interop/http-factory-tests": "^0.9",
+                "php-http/message-factory": "^1.0",
+                "php-http/psr7-integration-tests": "^1.0",
+                "phpunit/phpunit": "^7.5 || ^8.5 || ^9.4",
+                "symfony/error-handler": "^4.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.8-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Nyholm\\Psr7\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tobias Nyholm",
+                    "email": "tobias.nyholm@gmail.com"
+                },
+                {
+                    "name": "Martijn van der Ven",
+                    "email": "martijn@vanderven.se"
+                }
+            ],
+            "description": "A fast PHP7 implementation of PSR-7",
+            "homepage": "https://tnyholm.se",
+            "keywords": [
+                "psr-17",
+                "psr-7"
+            ],
+            "support": {
+                "issues": "https://github.com/Nyholm/psr7/issues",
+                "source": "https://github.com/Nyholm/psr7/tree/1.8.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/Zegnat",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nyholm",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-09-09T07:06:30+00:00"
+        },
+        {
             "name": "paragonie/constant_time_encoding",
             "version": "v3.1.3",
             "source": {
@@ -3037,6 +3184,207 @@
                 "source": "https://github.com/paragonie/constant_time_encoding"
             },
             "time": "2025-09-24T15:06:41+00:00"
+        },
+        {
+            "name": "partitech/php-mistral",
+            "version": "v0.1.25",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/partITech/php-mistral.git",
+                "reference": "a30c44eb0915aa0cf278ab4ababcdbfcb78cbf35"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/partITech/php-mistral/zipball/a30c44eb0915aa0cf278ab4ababcdbfcb78cbf35",
+                "reference": "a30c44eb0915aa0cf278ab4ababcdbfcb78cbf35",
+                "shasum": ""
+            },
+            "require": {
+                "czproject/git-php": "^4.4",
+                "ext-fileinfo": "*",
+                "ext-zip": "*",
+                "knplabs/php-json-schema": "^0.1.0",
+                "logiscape/mcp-sdk-php": "^1.1",
+                "monolog/monolog": "^3.5",
+                "nyholm/psr7": "^1.8",
+                "php": ">=8.2",
+                "php-http/discovery": "^1.20",
+                "php-http/multipart-stream-builder": "^1.4",
+                "psr/http-client": "^1.0",
+                "psr/http-client-implementation": "^1.0",
+                "psr/http-factory-implementation": "^1.0",
+                "ramsey/uuid": "^4.7",
+                "symfony/mime": "^6.3 || ^7.0"
+            },
+            "require-dev": {
+                "ext-curl": "*",
+                "ext-posix": "*",
+                "guzzlehttp/guzzle": "^7.9",
+                "php-http/curl-client": "^2.3",
+                "php-http/message": "^1.16",
+                "phpstan/phpstan": "^2.1",
+                "phpunit/phpunit": "^9.6",
+                "symfony/dotenv": "^6.3 || ^7.0",
+                "symfony/http-client": "^6.3 || ^7.0"
+            },
+            "type": "library",
+            "extra": {
+                "exclude-from-classmap": [
+                    "/tests/",
+                    "/vendor/phpunit/",
+                    "/vendor/symfony/dotenv/"
+                ]
+            },
+            "autoload": {
+                "psr-4": {
+                    "Partitech\\PhpMistral\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Connect to Mistral | Anthropic | Xai | Hugging Face | LamaC++ | Vllm | Ollama",
+            "support": {
+                "issues": "https://github.com/partITech/php-mistral/issues",
+                "source": "https://github.com/partITech/php-mistral/tree/v0.1.25"
+            },
+            "time": "2025-12-26T14:48:35+00:00"
+        },
+        {
+            "name": "php-http/discovery",
+            "version": "1.20.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-http/discovery.git",
+                "reference": "82fe4c73ef3363caed49ff8dd1539ba06044910d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-http/discovery/zipball/82fe4c73ef3363caed49ff8dd1539ba06044910d",
+                "reference": "82fe4c73ef3363caed49ff8dd1539ba06044910d",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^1.0|^2.0",
+                "php": "^7.1 || ^8.0"
+            },
+            "conflict": {
+                "nyholm/psr7": "<1.0",
+                "zendframework/zend-diactoros": "*"
+            },
+            "provide": {
+                "php-http/async-client-implementation": "*",
+                "php-http/client-implementation": "*",
+                "psr/http-client-implementation": "*",
+                "psr/http-factory-implementation": "*",
+                "psr/http-message-implementation": "*"
+            },
+            "require-dev": {
+                "composer/composer": "^1.0.2|^2.0",
+                "graham-campbell/phpspec-skip-example-extension": "^5.0",
+                "php-http/httplug": "^1.0 || ^2.0",
+                "php-http/message-factory": "^1.0",
+                "phpspec/phpspec": "^5.1 || ^6.1 || ^7.3",
+                "sebastian/comparator": "^3.0.5 || ^4.0.8",
+                "symfony/phpunit-bridge": "^6.4.4 || ^7.0.1"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "Http\\Discovery\\Composer\\Plugin",
+                "plugin-optional": true
+            },
+            "autoload": {
+                "psr-4": {
+                    "Http\\Discovery\\": "src/"
+                },
+                "exclude-from-classmap": [
+                    "src/Composer/Plugin.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Márk Sági-Kazár",
+                    "email": "mark.sagikazar@gmail.com"
+                }
+            ],
+            "description": "Finds and installs PSR-7, PSR-17, PSR-18 and HTTPlug implementations",
+            "homepage": "http://php-http.org",
+            "keywords": [
+                "adapter",
+                "client",
+                "discovery",
+                "factory",
+                "http",
+                "message",
+                "psr17",
+                "psr7"
+            ],
+            "support": {
+                "issues": "https://github.com/php-http/discovery/issues",
+                "source": "https://github.com/php-http/discovery/tree/1.20.0"
+            },
+            "time": "2024-10-02T11:20:13+00:00"
+        },
+        {
+            "name": "php-http/multipart-stream-builder",
+            "version": "1.4.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-http/multipart-stream-builder.git",
+                "reference": "10086e6de6f53489cca5ecc45b6f468604d3460e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-http/multipart-stream-builder/zipball/10086e6de6f53489cca5ecc45b6f468604d3460e",
+                "reference": "10086e6de6f53489cca5ecc45b6f468604d3460e",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1 || ^8.0",
+                "php-http/discovery": "^1.15",
+                "psr/http-factory-implementation": "^1.0"
+            },
+            "require-dev": {
+                "nyholm/psr7": "^1.0",
+                "php-http/message": "^1.5",
+                "php-http/message-factory": "^1.0.2",
+                "phpunit/phpunit": "^7.5.15 || ^8.5 || ^9.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Http\\Message\\MultipartStream\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tobias Nyholm",
+                    "email": "tobias.nyholm@gmail.com"
+                }
+            ],
+            "description": "A builder class that help you create a multipart stream",
+            "homepage": "http://php-http.org",
+            "keywords": [
+                "factory",
+                "http",
+                "message",
+                "multipart stream",
+                "stream"
+            ],
+            "support": {
+                "issues": "https://github.com/php-http/multipart-stream-builder/issues",
+                "source": "https://github.com/php-http/multipart-stream-builder/tree/1.4.2"
+            },
+            "time": "2024-09-04T13:22:54+00:00"
         },
         {
             "name": "phpoption/phpoption",

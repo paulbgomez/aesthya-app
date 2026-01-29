@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 class Moodboard extends Model
 {
     protected $fillable = [
+        'user_id',
+        'journal_id',
         'feeling',
         'artwork_ids',
         'music_ids',

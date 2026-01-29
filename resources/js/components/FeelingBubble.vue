@@ -3,8 +3,6 @@ import type { FeelingType } from '@/types/feeling';
 
 interface Props {
     feeling: FeelingType & {
-        id: number;
-        finalShape: string;
         fillColor: string;
         clipPath: string;
     };

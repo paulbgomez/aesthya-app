@@ -4,26 +4,35 @@ namespace App\Http\Controllers\Feelings;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\GenerateContentForFeeling;
-use App\Repositories\Feelings\FeelingsRepository;
+use App\Models\Feeling;
+use App\Models\Moodboard;
 use Illuminate\Http\Request;
 
 class GenerateContentController extends Controller
 {
-    public function generate(Request $request, FeelingsRepository $repo)
+    public function generate(Request $request)
     {
-        // 1. Validate the input
+        $user = $request->user();
+        if (!$user) {
+            abort(401, 'User must be authenticated');
+            }
+
         $validated = $request->validate([
-            'feeling_id' => 'required|exists:feelings,id'
+            'feeling_id' => 'required|integer|exists:feelings,id',
         ]);
 
-        // 2. Get the feeling from repository
-        $feeling = $repo->getFeelingById($validated['feeling_id']);
+        $feeling = Feeling::findOrFail($validated['feeling_id']);
         
-        // 3. Dispatch async job to handle LLM + API calls
-        // Think of this as "hiring a worker" to do the heavy lifting in background
-        GenerateContentForFeeling::dispatch($feeling);
+        $moodboard = Moodboard::create([
+            'feeling' => $feeling->name,
+            'user_id' => $user->id,
+            // TODO fix this    
+            'journal_id' => 1,
+            'generation_context' => null,
+        ]);
+
+        GenerateContentForFeeling::dispatch($feeling, $moodboard);
         
-        // 4. Return immediately (don't wait for job to finish)
         return back()->with('message', 'Content generation started! We\'ll notify you when ready.');
     }
 }

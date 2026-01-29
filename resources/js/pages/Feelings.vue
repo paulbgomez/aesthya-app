@@ -20,14 +20,6 @@ const { setSelectedFeeling, clearSelection } = store;
 const selectedFeeling = computed(() => store.selectedFeeling);
 const isGenerating = ref(false);
 
-const clipShapes = [
-    'polygon(20% 0%, 80% 0%, 100% 50%, 80% 100%, 20% 100%, 0% 50%)', // hexagon
-    'polygon(50% 0%, 100% 25%, 80% 100%, 20% 100%, 0% 25%)', // pentagon
-    'polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%)', // house-like
-    'polygon(0% 20%, 50% 0%, 100% 20%, 80% 100%, 20% 100%)', // kite
-    'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)', // octagon
-];
-
 const bucketedFeelings = computed(() => {
     const buckets: Record<string, FeelingType[]> = {
         'high-pleasant': [],
@@ -45,12 +37,10 @@ const bucketedFeelings = computed(() => {
     });
 
     const toPlotted = (list: FeelingType[]) =>
-        list.map((feeling, idx) => {
-            const shapeIndex = idx % clipShapes.length;
+        list.map((feeling) => {
             const { pastelColor } = usePastelColors(feeling.color);
             return {
                 ...feeling,
-                finalShape: clipShapes[shapeIndex],
                 fillColor: pastelColor,
             };
         });
