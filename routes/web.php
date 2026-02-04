@@ -2,9 +2,14 @@
 
 use App\Http\Controllers\Feelings\FeelingsController;
 use App\Http\Controllers\Feelings\GenerateContentController;
+use App\Services\WikidataArtworkService;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
+
+Route::get('/test', function () {
+    return (new WikidataArtworkService())->findArtwork('The Starry Night');
+});
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
