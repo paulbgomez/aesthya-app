@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Feelings\FeelingsController;
 use App\Http\Controllers\Feelings\GenerateContentController;
+use App\Http\Controllers\Moodboard\MoodboardController;
 use App\Services\WikidataArtworkService;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -28,6 +29,13 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
         ->name('feelings.index');
     Route::post('feelings/generate-content', [GenerateContentController::class, 'generate'])
         ->name('feelings.generate-content');
+
+    // Moodboard Routes
+    Route::get('moodboards', [MoodboardController::class, 'index'])
+        ->name('moodboard');
+    Route::get('moodboards/{id}', [MoodboardController::class, 'show'])
+        ->name('moodboard.show');
+    Route::get('/moodboards/{moodboard}/status', [MoodboardController::class, 'status'])->name('moodboard.status');
 });
 
 require __DIR__.'/settings.php';

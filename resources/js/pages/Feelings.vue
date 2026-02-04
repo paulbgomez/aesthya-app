@@ -6,6 +6,7 @@ import FeelingBubble from '@/components/FeelingBubble.vue';
 import { EnergyAxis, FeelingType, PleasantnessAxis } from '@/types/feeling';
 import { usePastelColors } from '@/composables/useColors';
 import { useFeelingStore } from '@/stores/feelingStore';
+import { moodboardService } from '@/services/MoodboardService';
 
 const props = defineProps<{
     feelings: FeelingType[];
@@ -86,21 +87,9 @@ const handleCurateMoodboard = () => {
     if (!selectedFeeling.value?.id) return;
 
     isGenerating.value = true;
-    
-    router.post(
-        '/feelings/generate-content',
-        { feeling_id: selectedFeeling.value.id },
-        {
-            onSuccess: () => {
-                isGenerating.value = false;
-            },
-            onError: () => {
-                isGenerating.value = false;
-            },
-        }
-    );
-};
-</script>
+    moodboardService.generateMoodboard(selectedFeeling.value.id);
+}
+;</script>
 
 <template>
     <Head title="Feelings" />

@@ -60,6 +60,7 @@ class ProcessGeneratedContentJob implements ShouldQueue
             'artwork_ids' => collect($artworkIds),
             'music_ids' => collect($musicIds),
             'book_ids' => collect($bookIds),
+            'job_status' => 'completed',
         ]);
     }
 

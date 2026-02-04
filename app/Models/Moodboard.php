@@ -18,7 +18,8 @@ class Moodboard extends Model
         'music_ids',
         'video_ids',
         'book_ids',
-        'generation_context'
+        'generation_context',
+        'job_status',
     ];  
 
     protected $casts = [

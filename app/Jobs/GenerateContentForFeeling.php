@@ -79,14 +79,6 @@ class GenerateContentForFeeling implements ShouldQueue
             $response = $client->chat(messages: $messages, params: $params, stream: false);
             $generatedContent = $response->getMessage();
 
-            Log::info('Mistral raw response received', [
-                'feeling_id' => $this->feeling->id,
-                'feeling_name' => $this->feeling->name,
-                'moodboard_id' => $this->moodboard->id,
-                'response_length' => strlen($generatedContent),
-                'raw_response' => $generatedContent, // Full raw response
-            ]);
-
             $parsedData = json_decode($generatedContent, true);
             
             $this->moodboard->update([
@@ -94,7 +86,9 @@ class GenerateContentForFeeling implements ShouldQueue
             ]);
 
             $this->moodboard->refresh();
+
             ProcessGeneratedContentJob::dispatch($this->moodboard);
+
         } catch (MistralClientException|DateMalformedStringException $e) {
             Log::error('Failed to generate content for feeling', [
                 'feeling_id' => $this->feeling->id,

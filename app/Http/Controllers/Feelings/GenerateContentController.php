@@ -32,7 +32,8 @@ class GenerateContentController extends Controller
         ]);
 
         GenerateContentForFeeling::dispatch($feeling, $moodboard);
-        
-        return back()->with('message', 'Content generation started! We\'ll notify you when ready.');
+
+        return redirect()->route('moodboard.show', $moodboard->id)
+            ->with('status', 'Content generation started for ' . $feeling->name);
     }
 }
