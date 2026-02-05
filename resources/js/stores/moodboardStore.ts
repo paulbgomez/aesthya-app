@@ -14,6 +14,7 @@ export const useMoodboardStore = defineStore('moodboard', () => {
 
         return data.status;
     };
+
     /**
      * Getters
      */

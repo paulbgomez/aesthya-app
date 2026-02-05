@@ -3,14 +3,22 @@
 namespace App\Http\Controllers\Moodboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ArtworkResource;
+use App\Http\Resources\BookResource;
 use App\Http\Resources\MoodboardResource;
+use App\Http\Resources\MusicTrackResource;
 use App\Models\Moodboard;
+use App\Repositories\Moodboard\MoodboardRepository;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class MoodboardController extends Controller
 {
+    public function __construct(
+        private MoodboardRepository $moodboardRepository
+    ) {}
+
     public function index(Request $request): Response
     {
         $user = $request->user();
@@ -29,10 +37,17 @@ class MoodboardController extends Controller
 
     public function show(int $id): Response
     {
-        $moodboard = Moodboard::findOrFail((int)$id);
+        $data = $this->moodboardRepository->getMoodboardWithContent($id);
+        
+        if (!$data) {
+            abort(404, 'Moodboard not found');
+        }
 
         return Inertia::render('Moodboards/Show', [
-            'moodboard' => (new MoodboardResource($moodboard))->resolve(),
+            'moodboard' => (new MoodboardResource($data['moodboard']))->resolve(),
+            'artworks' => ArtworkResource::collection($data['artworks'])->resolve(),
+            'musicTracks' => MusicTrackResource::collection($data['musicTracks'])->resolve(),
+            'books' => BookResource::collection($data['books'])->resolve(),
         ]);
     }
 

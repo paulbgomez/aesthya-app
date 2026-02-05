@@ -2,9 +2,11 @@
 
 namespace App\Repositories\Moodboard;
 
+use App\Models\Artwork;
+use App\Models\Book;
+use App\Models\Moodboard;
+use App\Models\MusicTrack;
 use App\Repositories\Repository;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class MoodboardRepository extends Repository
 {
@@ -18,11 +20,9 @@ class MoodboardRepository extends Repository
         // If content is a JSON string, decode it first
         $data = is_string($content) ? json_decode($content, true) : $content;
         
-        Log::info('Updating generation context', ['moodboard_id' => $moodboardId, 'data' => $data]);
-        return DB::table('moodboards')
-            ->where('id', $moodboardId)
+        return Moodboard::where('id', $moodboardId)
             ->update([
-                'generation_context' => json_encode($data),
+                'generation_context' => $data,
                 'updated_at' => now(),
             ]) > 0;
     }
@@ -30,14 +30,23 @@ class MoodboardRepository extends Repository
     /**
      * Get a moodboard by its ID.
      */
-    public function getMoodboardById(int $id)
+    public function getMoodboardById(int $id): Moodboard|null
     {
-        $result = DB::table('moodboards')->where('id', $id)->first();
-        
-        if (!$result) {
+        return Moodboard::find($id);
+    }
+
+    public function getMoodboardWithContent(int $id): array|null
+    {
+        $moodboard = $this->getMoodboardById($id);
+        if (!$moodboard) {
             return null;
         }
 
-        return $this->processToModel((array) $result);
+        return [
+            'moodboard' => $moodboard,
+            'artworks' => Artwork::whereIn('id', $moodboard->artwork_ids ?? [])->get(),
+            'musicTracks' => MusicTrack::whereIn('id', $moodboard->music_ids ?? [])->get(),
+            'books' => Book::whereIn('id', $moodboard->book_ids ?? [])->get(),
+        ];
     }
 }
