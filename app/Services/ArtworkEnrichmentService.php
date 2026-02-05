@@ -13,25 +13,22 @@ class ArtworkEnrichmentService
     ) {}
 
     /**
-     * Process artwork - check DB first, enrich with Wikidata if needed, create or return existing
+     * Process artwork - check DB first, enrich if needed, create or return existing
      */
     public function processArtwork(array $painting): Artwork
     {
         $title = $painting['title'] ?? 'Unknown';
         $artist = $painting['artist'] ?? 'Unknown';
 
-        // check if we have it on db
-        $existingArtwork = Artwork::where('title', $title)
-            ->where('artist', $artist)
-            ->first();
+        $query = Artwork::where('title', $title);
+        
+        if ($artist !== 'Unknown') {
+            $query->where('artist', $artist);
+        }
+        
+        $existingArtwork = $query->first();
         
         if ($existingArtwork) {
-            Log::info('Using existing artwork from database', [
-                'artwork_id' => $existingArtwork->id,
-                'title' => $title,
-                'artist' => $artist,
-            ]);
-            
             return $existingArtwork;
         }
         
@@ -39,7 +36,7 @@ class ArtworkEnrichmentService
     }
 
     /**
-     * Enrich artwork data with Wikidata and create new record
+     * Enrich artwork data with Wikidata/Wikipedia and create new record
      */
     private function enrichAndCreate(string $title, string $artist, array $llmData): Artwork
     {
@@ -51,29 +48,10 @@ class ArtworkEnrichmentService
             try {
                 $wikidataData = $this->wikidataService->findArtwork($title);
                 
-                Log::info('Wikidata response for artwork', [
-                    'title' => $title,
-                    'has_wikidata' => $wikidataData !== null,
-                    'has_image' => isset($wikidataData['image_url']) && !empty($wikidataData['image_url']),
-                ]);
-                
-                // If Wikidata didn't return an image, try Wikipedia
                 if (!$wikidataData || empty($wikidataData['image_url'])) {
-                    Log::info('Attempting Wikipedia lookup for artwork', [
-                        'title' => $title,
-                        'artist' => $artist,
-                    ]);
-                    
                     $wikipediaData = $this->wikipediaService->fetchArtworkData($title, $artist);
-                    
-                    Log::info('Wikipedia response for artwork', [
-                        'title' => $title,
-                        'has_wikipedia' => $wikipediaData !== null,
-                        'has_image' => isset($wikipediaData['image_url']) && !empty($wikipediaData['image_url']),
-                    ]);
                 }
                 
-                // Determine verification status based on available data
                 if (($wikidataData && !empty($wikidataData['image_url'])) || 
                     ($wikipediaData && !empty($wikipediaData['image_url']))) {
                     $verificationStatus = 'verified';
@@ -94,12 +72,19 @@ class ArtworkEnrichmentService
             }
         }
         
-        // Merge data: Wikidata preferred, then Wikipedia, then LLM data
+        $dataSource = 'llm';
+        if ($wikidataData && !empty($wikidataData['image_url'])) {
+            $dataSource = 'wikidata';
+        } elseif ($wikipediaData && !empty($wikipediaData['image_url'])) {
+            $dataSource = 'wikipedia';
+        }
+        
         $artworkData = [
             'title' => $wikidataData['title'] ?? $wikipediaData['title'] ?? $title,
             'artist' => $wikidataData['artist'] ?? $wikipediaData['artist'] ?? $artist,
             'image_url' => $wikidataData['image_url'] ?? $wikipediaData['image_url'] ?? null,
-            'source' => $wikidataData['museum'] ?? $wikipediaData['source'] ?? $llmData['museum'] ?? null,
+            'source' => $dataSource,
+            'museum_source' => $wikidataData['museum'] ?? $llmData['museum'] ?? null,
             'style' => $wikidataData['movement'] ?? $wikipediaData['style'] ?? null,
             'metadata' => array_filter([
                 'year' => $wikidataData['year'] ?? $wikipediaData['year'] ?? $llmData['year'] ?? null,
