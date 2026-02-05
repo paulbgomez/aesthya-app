@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\Artwork;
 use App\Models\Feeling;
 use App\Models\Moodboard;
 use DateMalformedStringException;
@@ -27,9 +28,15 @@ class GenerateContentForFeeling implements ShouldQueue
         
         $promptConfig = config('prompts.feeling_content_generation');
         
+        $previousArtworks = $this->getPreviousArtworks();
+        
         $userMessage = str_replace(
-            '{feeling}',
-            $this->feeling->name,
+            ['{feeling}', '{userId}', '{previous_artworks}', '{session_count}'],
+            [
+                $this->feeling->name,
+                $this->moodboard->user_id,
+                $previousArtworks,
+            ],
             $promptConfig['user_template']
         );
         
@@ -62,11 +69,35 @@ class GenerateContentForFeeling implements ShouldQueue
 
         } catch (MistralClientException|DateMalformedStringException $e) {
             Log::error('Failed to generate content for feeling', [
-                'feeling_id' => $this->feeling->id,
+                'feeling' => $this->feeling->name,
                 'error' => $e->getMessage(),
             ]);
             
             throw $e;
         }
+    }
+
+    /**
+     * Get previously suggested artworks for this user + feeling combination
+     */
+    private function getPreviousArtworks(): string
+    {
+       $previousMoodboards = Moodboard::where('user_id', $this->moodboard->user_id)
+            ->where('feeling', $this->feeling->name)
+            ->where('id', '!=', $this->moodboard->id)
+            ->whereNotNull('artwork_ids')
+            ->get();
+
+        if ($previousMoodboards->isEmpty()) {
+            return "  (None - this is their first time with this feeling)";
+        }
+
+        $artworkIds = $previousMoodboards->pluck('artwork_ids')->flatten()->unique();
+        $artworks = Artwork::whereIn('id', $artworkIds)
+            ->get()
+            ->map(fn($artwork) => "  - \"{$artwork->title}\" by {$artwork->artist}")
+            ->join("\n");
+
+        return $artworks ?: "  (None - this is their first time with this feeling)";
     }
 }
