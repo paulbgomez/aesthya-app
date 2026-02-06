@@ -21,6 +21,10 @@ class HardcoverApiService
                     }
                 ) {
                     id
+                    author {
+                        name
+                        id
+                    }
                     book {
                         id
                         title

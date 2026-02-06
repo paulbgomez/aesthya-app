@@ -86,8 +86,16 @@ class ProcessGeneratedContentJob implements ShouldQueue
         $ids = [];
         
         foreach ($books as $book) {
-            $result = $bookService->processBookData($book['title'] ?? 'Unknown', $book['author'] ?? 'Unknown');
-            return $result ? [$result->id] : [];
+            $result = $bookService->processBookData(
+                $book['author'] ?? 'Unknown',
+                $book['title'] ?? 'Unknown'
+            );
+            
+            if ($result) {
+                $ids[] = $result->id;
+            } else {
+                Log::warning('Book processing returned null', ['book' => $book]);
+            }
         }
         
         return $ids;

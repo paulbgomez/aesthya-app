@@ -6,6 +6,7 @@ import FeelingBubble from '@/components/FeelingBubble.vue';
 import { EnergyAxis, FeelingType, PleasantnessAxis } from '@/types/feeling';
 import { usePastelColors } from '@/composables/useColors';
 import { useFeelingStore } from '@/stores/feelingStore';
+import { moodboardService } from '@/services/moodboardService';
 
 const props = defineProps<{
     feelings: FeelingType[];

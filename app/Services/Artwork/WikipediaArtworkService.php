@@ -12,31 +12,41 @@ class WikipediaArtworkService
     public function fetchArtworkData(string $title): ?array
     {
         $attempts = [
-            str_replace(' ', '_', $title),
-            str_replace([' ', '-'], ['_', '–'], $title),
+            str_replace(' ', '_', $title),                       // Spaces to underscores (Wikipedia standard)
+            $title,                                              // Original title
+            ucfirst(str_replace(' ', '_', $title)),              // Capitalize first letter
+            str_replace([' ', '-'], ['_', '–'], $title),         // En-dash variant
         ];
 
         foreach ($attempts as $attempt) {
-            $url = self::ENDPOINT_URL . rawurlencode($attempt);
+            $url = self::ENDPOINT_URL . $attempt;
 
             try {
-                $response = Http::get($url);
+                /** @var \Illuminate\Http\Client\Response $response */
+                $response = Http::timeout(10)
+                    ->withHeaders([
+                        'User-Agent' => 'Aesthya/1.0 (https://github.com/paulbgomez)',
+                    ])
+                    ->withOptions(['allow_redirects' => true])
+                    ->get($url);
 
                 if ($response->successful()) {
                     $data = $response->json();
 
-                    return [
-                        'description' => $data['extract'] ?? null,
-                        'image_url' => $data['thumbnail']['source'] ?? null,
-                    ];
+                    if (isset($data['type']) && $data['type'] === 'standard') {
+                        return [
+                            'description' => $data['extract'] ?? null,
+                            'image_url' => $data['thumbnail']['source'] ?? $data['originalimage']['source'] ?? null,
+                        ];
+                    }
                 }
             } catch (\Exception $e) {
-                Log::error('Wikipedia API error', ['title' => $title, 'attempt' => $attempt, 'error' => $e->getMessage()]);
+                Log::error('Wikipedia API error', ['title' => $title, 'attempt' => $attempt, 'url' => $url, 'error' => $e->getMessage()]);
                 continue;
             }
         }
 
-        Log::warning('Wikipedia lookup failed for all title variants', ['title' => $title]);
+        Log::warning('Wikipedia lookup failed for all title variants', ['title' => $title, 'attempts' => $attempts]);
         return null;
     }
 }
