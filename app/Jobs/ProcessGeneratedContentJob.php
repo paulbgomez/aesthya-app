@@ -6,6 +6,7 @@ use App\Models\Book;
 use App\Models\Moodboard;
 use App\Models\MusicTrack;
 use App\Services\Artwork\ArtworkEnrichmentService;
+use App\Services\Book\BookService;
 use ArrayObject;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -19,7 +20,7 @@ class ProcessGeneratedContentJob implements ShouldQueue
         private Moodboard $moodboard,
     ) {}
 
-    public function handle(ArtworkEnrichmentService $artworkService): void
+    public function handle(ArtworkEnrichmentService $artworkService, BookService $bookService): void
     {
         $data = $this->moodboard->generation_context;
         
@@ -42,7 +43,7 @@ class ProcessGeneratedContentJob implements ShouldQueue
 
         $artworkIds = $this->processArtworks($content['paintings'] ?? [], $artworkService);
         $musicIds = $this->processMusicTracks($content['music'] ?? []);
-        $bookIds = $this->processBooks([$content['book'] ?? []]);
+        $bookIds = $this->processBooks([$content['book'] ?? []], $bookService);
         
         $this->moodboard->update([
             'artwork_ids' => collect($artworkIds),
@@ -80,17 +81,13 @@ class ProcessGeneratedContentJob implements ShouldQueue
         return $ids;
     }
 
-    private function processBooks(array $books): array
+    private function processBooks(array $books, BookService $bookService): array
     {
         $ids = [];
         
         foreach ($books as $book) {
-            $bookModel = Book::create([
-                'title' => $book['title'] ?? 'Unknown',
-                'author' => $book['author'] ?? 'Unknown',
-            ]);
-            
-            $ids[] = $bookModel->id;
+            $result = $bookService->processBookData($book['title'] ?? 'Unknown', $book['author'] ?? 'Unknown');
+            return $result ? [$result->id] : [];
         }
         
         return $ids;

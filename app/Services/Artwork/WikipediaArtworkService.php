@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Log;
 
 class WikipediaArtworkService
 {
+    private const ENDPOINT_URL = 'https://en.wikipedia.org/api/rest_v1/page/summary/';
+
     public function fetchArtworkData(string $title): ?array
     {
         $attempts = [
@@ -15,7 +17,7 @@ class WikipediaArtworkService
         ];
 
         foreach ($attempts as $attempt) {
-            $url = "https://en.wikipedia.org/api/rest_v1/page/summary/" . rawurlencode($attempt);
+            $url = self::ENDPOINT_URL . rawurlencode($attempt);
 
             try {
                 $response = Http::get($url);

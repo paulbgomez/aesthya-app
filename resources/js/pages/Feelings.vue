@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { Head, router } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import AppLayout from '@/layouts/AppLayout.vue';
 import FeelingBubble from '@/components/FeelingBubble.vue';
 import { EnergyAxis, FeelingType, PleasantnessAxis } from '@/types/feeling';
 import { usePastelColors } from '@/composables/useColors';
 import { useFeelingStore } from '@/stores/feelingStore';
-import { moodboardService } from '@/services/MoodboardService';
 
 const props = defineProps<{
     feelings: FeelingType[];
