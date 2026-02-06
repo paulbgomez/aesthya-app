@@ -1,6 +1,6 @@
 <?php
 
-use App\Services\WikidataArtworkService;
+use App\Services\Artwork\WikidataArtworkService;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 

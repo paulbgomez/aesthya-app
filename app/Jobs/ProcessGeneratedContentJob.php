@@ -5,7 +5,7 @@ namespace App\Jobs;
 use App\Models\Book;
 use App\Models\Moodboard;
 use App\Models\MusicTrack;
-use App\Services\ArtworkEnrichmentService;
+use App\Services\Artwork\ArtworkEnrichmentService;
 use ArrayObject;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;

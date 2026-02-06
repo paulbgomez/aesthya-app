@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Services\WikipediaArtworkService;
+use App\Services\Artwork\WikipediaArtworkService;
 use Illuminate\Support\Facades\Http;
 
 it('fetches the artwork correctly from Wikipedia', function () {

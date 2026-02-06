@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Artwork;
 
 use App\Models\Artwork;
 use Illuminate\Support\Facades\Log;

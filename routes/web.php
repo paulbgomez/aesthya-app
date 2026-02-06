@@ -3,7 +3,7 @@
 use App\Http\Controllers\Feelings\FeelingsController;
 use App\Http\Controllers\Feelings\GenerateContentController;
 use App\Http\Controllers\Moodboard\MoodboardController;
-use App\Services\WikidataArtworkService;
+use App\Services\Artwork\WikidataArtworkService;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
