@@ -30,6 +30,7 @@ class BookService
             'title' => $response['title'] ?? $bookTitle,
             'author' => $response['author'] ?? $authorName,
             'cover_image' => $response['cover_url'] ?? null,
+            'veridfied' => !empty($response['cover_url']) && !empty($response['author']),
             'metadata' => [
                 'year' => $response['year'] ?? null,
                 'rating' => $response['rating'] ?? null,

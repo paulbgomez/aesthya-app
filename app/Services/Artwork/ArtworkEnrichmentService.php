@@ -42,7 +42,7 @@ class ArtworkEnrichmentService
     {
         $wikidataData = null;
         $wikipediaData = null;
-        $verificationStatus = 'unverified';
+        $verificationStatus = false;
         
         if ($title !== 'Unknown') {
             try {
@@ -54,16 +54,14 @@ class ArtworkEnrichmentService
                 
                 if (($wikidataData && !empty($wikidataData['image_url'])) || 
                     ($wikipediaData && !empty($wikipediaData['image_url']))) {
-                    $verificationStatus = 'verified';
+                    $verificationStatus = true;
                 } else {
-                    $verificationStatus = 'not_verified';
                     Log::warning('No image found for artwork in Wikidata or Wikipedia', [
                         'title' => $title,
                         'artist' => $artist,
                     ]);
                 }
             } catch (\Exception $e) {
-                $verificationStatus = 'verification_failed';
                 Log::warning('Data enrichment failed, continuing with LLM data', [
                     'title' => $title,
                     'artist' => $artist,
@@ -86,6 +84,7 @@ class ArtworkEnrichmentService
             'source' => $dataSource,
             'museum_source' => $wikidataData['museum'] ?? $llmData['museum'] ?? null,
             'style' => $wikidataData['movement'] ?? $wikipediaData['style'] ?? null,
+            'verified' => $verificationStatus,
             'metadata' => array_filter([
                 'year' => $wikidataData['year'] ?? $wikipediaData['year'] ?? $llmData['year'] ?? null,
                 'material' => $wikidataData['material'] ?? null,
