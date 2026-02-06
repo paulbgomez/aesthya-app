@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 
 test('profile page is displayed', function () {
     $user = User::factory()->create();
@@ -17,6 +18,7 @@ test('profile information can be updated', function () {
 
     $response = $this
         ->actingAs($user)
+        ->withoutMiddleware(ValidateCsrfToken::class)
         ->patch(route('profile.update'), [
             'name' => 'Test User',
             'email' => 'test@example.com',
@@ -38,6 +40,7 @@ test('email verification status is unchanged when the email address is unchanged
 
     $response = $this
         ->actingAs($user)
+        ->withoutMiddleware(ValidateCsrfToken::class)
         ->patch(route('profile.update'), [
             'name' => 'Test User',
             'email' => $user->email,
@@ -55,6 +58,7 @@ test('user can delete their account', function () {
 
     $response = $this
         ->actingAs($user)
+        ->withoutMiddleware(ValidateCsrfToken::class)
         ->delete(route('profile.destroy'), [
             'password' => 'password',
         ]);
@@ -72,6 +76,7 @@ test('correct password must be provided to delete account', function () {
 
     $response = $this
         ->actingAs($user)
+        ->withoutMiddleware(ValidateCsrfToken::class)
         ->from(route('profile.edit'))
         ->delete(route('profile.destroy'), [
             'password' => 'wrong-password',

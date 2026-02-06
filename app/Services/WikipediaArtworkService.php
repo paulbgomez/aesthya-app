@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class WikipediaArtworkService
@@ -17,25 +18,14 @@ class WikipediaArtworkService
             $url = "https://en.wikipedia.org/api/rest_v1/page/summary/" . rawurlencode($attempt);
 
             try {
-                $response = @file_get_contents($url);
-                if ($response === false) {
-                    continue;
-                }
-                
-                $response = json_decode($response);
+                $response = Http::get($url);
 
-                $response = json_decode($response);
-
-                if (isset($response->title)) {
-                    Log::info('Wikipedia response for artwork', [
-                        'title' => $response->title,
-                        'description' => $response->extract ?? null,
-                        'image_url' => $response->thumbnail->source ?? null,
-                    ]);
+                if ($response->successful()) {
+                    $data = $response->json();
 
                     return [
-                        'description' => $response->extract ?? null,
-                        'image_url' => $response->thumbnail->source ?? null,
+                        'description' => $data['extract'] ?? null,
+                        'image_url' => $data['thumbnail']['source'] ?? null,
                     ];
                 }
             } catch (\Exception $e) {

@@ -3,6 +3,8 @@
 use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
 use Laravel\Fortify\Features;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
+
 
 test('two factor challenge redirects to login when not authenticated', function () {
     if (! Features::canManageTwoFactorAuthentication()) {
@@ -32,10 +34,11 @@ test('two factor challenge can be rendered', function () {
         'two_factor_confirmed_at' => now(),
     ])->save();
 
-    $this->post(route('login'), [
-        'email' => $user->email,
-        'password' => 'password',
-    ]);
+    $this->withoutMiddleware(ValidateCsrfToken::class)
+        ->post(route('login'), [
+            'email' => $user->email,
+            'password' => 'password',
+        ]);
 
     $this->get(route('two-factor.login'))
         ->assertOk()

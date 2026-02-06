@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Support\Facades\Hash;
 
 test('password update page is displayed', function () {
@@ -18,6 +19,7 @@ test('password can be updated', function () {
 
     $response = $this
         ->actingAs($user)
+        ->withoutMiddleware(ValidateCsrfToken::class)
         ->from(route('user-password.edit'))
         ->put(route('user-password.update'), [
             'current_password' => 'password',
@@ -37,6 +39,7 @@ test('correct password must be provided to update password', function () {
 
     $response = $this
         ->actingAs($user)
+        ->withoutMiddleware(ValidateCsrfToken::class)
         ->from(route('user-password.edit'))
         ->put(route('user-password.update'), [
             'current_password' => 'wrong-password',
