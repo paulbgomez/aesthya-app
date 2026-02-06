@@ -13,35 +13,38 @@ class HardcoverApiService
     private function getBookByAuthorAndTitleQuery(): string
     {
         return <<<'GRAPHQL'
-            query GetAuthorContributions($authorName: String!, $bookTitle: String!) {
-                contributions(
-                    where: {
-                        author: { name: { _eq: $authorName } }
-                        _and: { book: { title: { _eq: $bookTitle } } }
-                    }
-                ) {
-                    id
-                    author {
-                        name
-                        id
-                    }
-                    book {
-                        id
-                        title
-                        release_year
-                        rating
-                        pages
-                        image {
-                            id
-                            width
-                            height
-                            url
-                        }
-                    }
-                    created_at
-                }
-            }
-        GRAPHQL;
+query GetAuthorContributions($authorName: String!, $bookTitle: String!) {
+  contributions(
+    where: {
+      _and: [
+        { author: { name: { _eq: $authorName } } }
+        { book: { title: { _eq: $bookTitle } } }
+        { book: { image: { url: { _is_null: false } } } }
+      ]
+    }
+  ) {
+    id
+    author {
+      name
+      id
+    }
+    book {
+      id
+      title
+      release_year
+      rating
+      pages
+      image {
+        id
+        width
+        height
+        url
+      }
+    }
+    created_at
+  }
+}
+GRAPHQL;
     }
 
     private function executeGraphQL(string $query, array $variables = []): ?array
@@ -105,6 +108,14 @@ class HardcoverApiService
     {
         $book = $contribution['book'] ?? [];
         $author = $contribution['author'] ?? null;
+
+        Log::info('Contribution found', [
+            'contribution_id' => $contribution['id'] ?? null,
+            'book_id' => $book['id'] ?? null,
+            'title' => $book['title'] ?? null,
+            'author' => $author['name'] ?? null,
+            'cover_url' => $book['image']['url'] ?? null,
+        ]);
 
         return [
             'contribution_id' => $contribution['id'] ?? null,

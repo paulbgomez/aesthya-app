@@ -14,7 +14,8 @@ class MusicTrack extends Model
         'genre',
         'duration',
         'audio_url',
-        'metadata'
+        'metadata',
+        'verified',
     ];
 
     protected $casts = [

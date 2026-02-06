@@ -3,7 +3,10 @@
 namespace App\Services\Artwork;
 
 use App\Models\Artwork;
+use Illuminate\Database\QueryException;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\Log;
+use PDOException;
 
 class ArtworkEnrichmentService
 {
@@ -20,13 +23,9 @@ class ArtworkEnrichmentService
         $title = $painting['title'] ?? 'Unknown';
         $artist = $painting['artist'] ?? 'Unknown';
 
-        $query = Artwork::where('title', $title);
-        
-        if ($artist !== 'Unknown') {
-            $query->where('artist', $artist);
-        }
-        
-        $existingArtwork = $query->first();
+        $existingArtwork = Artwork::where('title', $title)
+            ->where('artist', $artist)
+            ->first();
         
         if ($existingArtwork) {
             return $existingArtwork;
@@ -95,15 +94,29 @@ class ArtworkEnrichmentService
             ]),
         ];
         
-        $artwork = Artwork::create($artworkData);
+        $artwork = Artwork::firstOrCreate(
+            [
+                'title' => $artworkData['title'],
+                'artist' => $artworkData['artist'],
+            ],
+            $artworkData
+        );
         
-        Log::info('Artwork created', [
-            'artwork_id' => $artwork->id,
-            'title' => $artwork->title,
-            'verification_status' => $verificationStatus,
-            'has_image' => !empty($artworkData['image_url']),
-            'image_url' => $artworkData['image_url'] ?? null,
-        ]);
+        // Only log if we actually created it (not if we found existing)
+        if ($artwork->wasRecentlyCreated) {
+            Log::info('Artwork created', [
+                'artwork_id' => $artwork->id,
+                'title' => $artwork->title,
+                'verification_status' => $verificationStatus,
+                'has_image' => !empty($artworkData['image_url']),
+                'image_url' => $artworkData['image_url'] ?? null,
+            ]);
+        } else {
+            Log::info('Artwork already exists, using cached version', [
+                'artwork_id' => $artwork->id,
+                'title' => $artwork->title,
+            ]);
+        }
         
         return $artwork;
     }

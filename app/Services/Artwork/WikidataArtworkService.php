@@ -81,11 +81,6 @@ class WikidataArtworkService
 
             $data = $response->json();
 
-            Log::info('Wikidata query successful', [
-                'query' => $sparqlQuery,
-                'data' => $data,
-            ]);
-
             return $data;
             
         } catch (\Exception $e) {

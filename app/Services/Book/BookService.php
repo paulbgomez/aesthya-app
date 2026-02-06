@@ -26,19 +26,22 @@ class BookService
 
         $response = $this->hardcoverService->fetchBookByAuthorAndTitle($authorName, $bookTitle);
         
-        $book = Book::create([
+        $bookData = [
             'title' => $response['title'] ?? $bookTitle,
             'author' => $response['author'] ?? $authorName,
             'cover_image' => $response['cover_url'] ?? null,
-            'veridfied' => !empty($response['cover_url']) && !empty($response['author']),
+            'verified' => !empty($response['cover_url']) && !empty($response['author']),
             'metadata' => [
                 'year' => $response['year'] ?? null,
                 'rating' => $response['rating'] ?? null,
                 'pages' => $response['pages'] ?? null,
                 'image_width' => $response['cover_width'] ?? null,
                 'image_height' => $response['cover_height'] ?? null,
+                'source' => $response ? 'hardcover' : 'llm',
             ],
-        ]);
+        ];
+        
+        $book = Book::create($bookData);
 
         return $book;
     }

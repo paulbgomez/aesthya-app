@@ -14,7 +14,8 @@ class Book extends Model
         'cover_image',
         'isbn',
         'tags',
-        'metadata'
+        'metadata',
+        'verified',
     ];
 
     protected $casts = [

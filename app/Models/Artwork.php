@@ -16,7 +16,9 @@ class Artwork extends Model
         'style',
         'color_palette',
         'themes',
-        'metadata'
+        'metadata',
+        'museum_source',
+        'verified',
     ];
 
     protected $casts = [
