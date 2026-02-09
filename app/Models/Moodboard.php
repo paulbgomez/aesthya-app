@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Moodboard extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'user_id',
         'journal_id',
@@ -20,7 +22,7 @@ class Moodboard extends Model
         'book_ids',
         'generation_context',
         'job_status',
-    ];  
+    ];
 
     protected $casts = [
         'artwork_ids' => AsCollection::class,
@@ -30,6 +32,15 @@ class Moodboard extends Model
         'generation_context' => AsArrayObject::class,
         'color_ids' => 'array',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $moodboard): void {
+            if (empty($moodboard->uuid)) {
+                $moodboard->uuid = (string) Str::uuid();
+            }
+        });
+    }
 
     public function favorites()
     {

@@ -9,19 +9,19 @@ class ColorService
     public function __construct(
     ) {}
 
-    public function processColorData(Color $color): int|null
+    public function processColorData(array $color): int|null
     {
-        $existingColor = Color::where('name', $color->name)->first();
+        $existingColor = Color::where('hex', $color['hex'])->first();
         
         if ($existingColor) {
             return $existingColor->id;
         }
 
         $colorData = [
-            'name' => $color->name,
-            'hex_code' => $color->hex_code ?? null,
-            'explanation' => $color->explanation ?? null,
-            'pantone' => $color->pantone ?? null,
+            'name' => $color['name'],
+            'hex' => $color['hex'] ?? null,
+            'explanation' => $color['explanation'] ?? null,
+            'pantone' => $color['pantone'] ?? null,
         ];
         
         $color = Color::create($colorData);
