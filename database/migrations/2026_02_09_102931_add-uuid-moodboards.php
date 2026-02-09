@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('journal', function (Blueprint $table) {
-            $table->dropIndex('journal_creation_date_index');
-            $table->dropColumn('creation_date');
+        //
+        Schema::table('moodboards', function (Blueprint $table) {
+            $table->uuid('uuid')->unique()->after('id');
         });
     }
 
@@ -22,9 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('journal', function (Blueprint $table) {
-            $table->date('creation_date')->nullable();
-            $table->index('creation_date');
+        //
+        Schema::table('moodboards', function (Blueprint $table) {
+            $table->dropColumn('uuid');
         });
     }
 };

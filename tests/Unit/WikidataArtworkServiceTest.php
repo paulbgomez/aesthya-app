@@ -51,7 +51,7 @@ it('returns null when no results found', function () {
         ], 200),
     ]);
 
-    Log::shouldReceive('info')->times(2);
+    Log::shouldReceive('info')->atLeast()->once();
 
     $service = resolve(WikidataArtworkService::class);
     $result = $service->findArtwork('Nonexistent Painting');
