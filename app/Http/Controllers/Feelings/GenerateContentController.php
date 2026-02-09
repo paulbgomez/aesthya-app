@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Feelings;
 use App\Http\Controllers\Controller;
 use App\Jobs\GenerateContentForFeeling;
 use App\Models\Feeling;
+use App\Models\Journal;
 use App\Models\Moodboard;
 use Illuminate\Http\Request;
 
@@ -26,8 +27,9 @@ class GenerateContentController extends Controller
         $moodboard = Moodboard::create([
             'feeling' => $feeling->name,
             'user_id' => $user->id,
-            // TODO fix this    
-            'journal_id' => 1,
+            'journal_id' => Journal::create([
+                'user_id' => $user->id,
+            ])->id,
             'generation_context' => null,
         ]);
 

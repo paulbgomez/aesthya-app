@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Journal;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -19,7 +20,7 @@ class MoodboardFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'journal_id' => 1, // Default journal ID
+            'journal_id' => Journal::factory(),
             'feeling' => fake()->randomElement([
                 'joyful', 'melancholic', 'anxious', 'peaceful', 'excited'
             ]),

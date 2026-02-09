@@ -20,6 +20,9 @@ class Moodboard extends Model
         'music_ids',
         'video_ids',
         'book_ids',
+        'color_ids',
+        'artistic_period_id',
+        'poem_id',
         'generation_context',
         'job_status',
     ];

@@ -20,7 +20,6 @@ class JournalFactory extends Factory
         return [
             'user_id' => User::factory(),
             'content' => fake()->paragraph(),
-            'creation_date' => fake()->date(),
         ];
     }
 }
