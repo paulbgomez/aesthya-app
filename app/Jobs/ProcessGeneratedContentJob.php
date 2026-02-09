@@ -2,11 +2,11 @@
 
 namespace App\Jobs;
 
-use App\Models\Book;
 use App\Models\Moodboard;
 use App\Models\MusicTrack;
 use App\Services\Artwork\ArtworkEnrichmentService;
 use App\Services\Book\BookService;
+use App\Services\Color\ColorService;
 use ArrayObject;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -44,6 +44,7 @@ class ProcessGeneratedContentJob implements ShouldQueue
         $artworkIds = $this->processArtworks($content['paintings'] ?? [], $artworkService);
         $musicIds = $this->processMusicTracks($content['music'] ?? []);
         $bookIds = $this->processBooks([$content['book'] ?? []], $bookService);
+        $colors = $this->processColors($content['colors'] ?? [], new ColorService());
         
         $this->moodboard->update([
             'artwork_ids' => collect($artworkIds),
@@ -95,6 +96,22 @@ class ProcessGeneratedContentJob implements ShouldQueue
                 $ids[] = $result->id;
             } else {
                 Log::warning('Book processing returned null', ['book' => $book]);
+            }
+        }
+        
+        return $ids;
+    }
+
+    private function processColors(array $colors, ColorService $service): array
+    {
+        $ids = [];
+        
+        foreach ($colors as $color) {
+            $color = $service->processColorData($color);
+            if ($color) {
+                $ids[] = $color->id;
+            } else {
+                Log::warning('Color processing returned null', ['color' => $color]);
             }
         }
         

@@ -28,6 +28,7 @@ class Moodboard extends Model
         'video_ids' => AsCollection::class,
         'book_ids' => AsCollection::class,
         'generation_context' => AsArrayObject::class,
+        'color_ids' => 'array',
     ];
 
     public function favorites()
