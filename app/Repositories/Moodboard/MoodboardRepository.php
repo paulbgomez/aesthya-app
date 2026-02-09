@@ -2,10 +2,13 @@
 
 namespace App\Repositories\Moodboard;
 
+use App\Models\ArtisticPeriod;
 use App\Models\Artwork;
 use App\Models\Book;
+use App\Models\Color;
 use App\Models\Moodboard;
 use App\Models\MusicTrack;
+use App\Models\Poem;
 use App\Repositories\Repository;
 
 class MoodboardRepository extends Repository
@@ -47,6 +50,9 @@ class MoodboardRepository extends Repository
             'artworks' => Artwork::whereIn('id', $moodboard->artwork_ids ?? [])->get(),
             'musicTracks' => MusicTrack::whereIn('id', $moodboard->music_ids ?? [])->get(),
             'books' => Book::whereIn('id', $moodboard->book_ids ?? [])->get(),
+            'colors' => Color::whereIn('id', $moodboard->color_ids ?? [])->get(),
+            'artisticPeriod' => ArtisticPeriod::find($moodboard->artistic_period_id),
+            'poem' => Poem::find($moodboard->poem_id),
         ];
     }
 }

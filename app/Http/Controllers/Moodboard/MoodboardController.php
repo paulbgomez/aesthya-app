@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Moodboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ArtisticPeriodResource;
 use App\Http\Resources\ArtworkResource;
 use App\Http\Resources\BookResource;
+use App\Http\Resources\ColorResource;
 use App\Http\Resources\MoodboardResource;
 use App\Http\Resources\MusicTrackResource;
+use App\Http\Resources\PoemResource;
 use App\Models\Moodboard;
 use App\Repositories\Moodboard\MoodboardRepository;
 use Illuminate\Http\Request;
@@ -48,6 +51,13 @@ class MoodboardController extends Controller
             'artworks' => ArtworkResource::collection($data['artworks'])->resolve(),
             'musicTracks' => MusicTrackResource::collection($data['musicTracks'])->resolve(),
             'books' => BookResource::collection($data['books'])->resolve(),
+            'colors' => ColorResource::collection($data['colors'])->resolve(),
+            'artisticPeriod' => $data['artisticPeriod']
+                ? (new ArtisticPeriodResource($data['artisticPeriod']))->resolve()
+                : null,
+            'poem' => $data['poem']
+                ? (new PoemResource($data['poem']))->resolve()
+                : null,
         ]);
     }
 
