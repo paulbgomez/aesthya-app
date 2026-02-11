@@ -3,8 +3,13 @@
 namespace App\Jobs;
 
 use App\Models\Artwork;
+use App\Models\Book;
 use App\Models\Feeling;
 use App\Models\Moodboard;
+use App\Models\Color;
+use App\Models\MusicTrack;
+use App\Models\Poem;
+use App\Models\ArtisticPeriod;
 use DateMalformedStringException;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -28,14 +33,14 @@ class GenerateContentForFeeling implements ShouldQueue
         
         $promptConfig = config('prompts.feeling_content_generation');
         
-        $previousArtworks = $this->getPreviousArtworks();
+        $previousMoodboardsArt = $this->getPreviousMoodboardsArt();
         
         $userMessage = str_replace(
-            ['{feeling}', '{userId}', '{previous_artworks}', '{session_count}'],
+            ['{feeling}', '{userId}', '{previous_moodboards_art}', '{session_count}'],
             [
                 $this->feeling->name,
                 $this->moodboard->user_id,
-                $previousArtworks,
+                $previousMoodboardsArt,
             ],
             $promptConfig['user_template']
         );
@@ -78,9 +83,9 @@ class GenerateContentForFeeling implements ShouldQueue
     }
 
     /**
-     * Get previously suggested artworks for this user + feeling combination
+     * Get previously suggested art for this user + feeling combination
      */
-    private function getPreviousArtworks(): string
+    private function getPreviousMoodboardsArt(): string
     {
        $previousMoodboards = Moodboard::where('user_id', $this->moodboard->user_id)
             ->where('feeling', $this->feeling->name)
@@ -92,12 +97,82 @@ class GenerateContentForFeeling implements ShouldQueue
             return "  (None - this is their first time with this feeling)";
         }
 
-        $artworkIds = $previousMoodboards->pluck('artwork_ids')->flatten()->unique();
+        $artworkIds = $previousMoodboards->pluck('artwork_ids')->flatten()->unique()->values()->all();
+        $bookIds = $previousMoodboards->pluck('book_id')->flatten()->unique()->values()->all();
+        $poemIds = $previousMoodboards->pluck('poem_id')->flatten()->unique()->values()->all();
+        $musicIds = $previousMoodboards->pluck('music_track_ids')->flatten()->unique()->values()->all();
+        $colorIds = $previousMoodboards->pluck('color_ids')->flatten()->unique()->values()->all();
+        $periodIds = $previousMoodboards->pluck('artistic_period_ids')->flatten()->unique()->values()->all();
+        return $this->getPreviousContent($artworkIds, $bookIds, $poemIds, $musicIds, $colorIds, $periodIds);
+    }
+
+    private function getPreviousArtworks(array $artworkIds): string
+    {
         $artworks = Artwork::whereIn('id', $artworkIds)
             ->get()
             ->map(fn($artwork) => "  - \"{$artwork->title}\" by {$artwork->artist}")
             ->join("\n");
 
-        return $artworks ?: "  (None - this is their first time with this feeling)";
+        return $artworks;
+    }
+
+    private function getPreviousBooks(array $bookIds): string
+    {
+        $books = Book::whereIn('id', $bookIds)
+            ->get()
+            ->map(fn($book) => "  - \"{$book->title}\" by {$book->author}")
+            ->join("\n");
+
+        return $books;
+    }
+
+    private function getPreviousPoems(array $poemIds): string
+    {
+        $poems = Poem::whereIn('id', $poemIds)
+            ->get()
+            ->map(fn($poem) => "  - \"{$poem->title}\" by {$poem->author}")
+            ->join("\n");
+
+        return $poems;
+    }
+
+    private function getPreviousMusic(array $musicIds): string
+    {
+        $music = MusicTrack::whereIn('id', $musicIds)
+            ->get()
+            ->map(fn($track) => "  - \"{$track->title}\" by {$track->artist}")
+            ->join("\n");
+
+        return $music;
+    }
+
+    private function getPreviousColors(array $colorIds): string
+    {
+        $colors = Color::whereIn('id', $colorIds)
+            ->get()
+            ->map(fn($color) => "  - \"{$color->name}\" (Hex: {$color->hex})")
+            ->join("\n");
+
+        return $colors;
+    }
+
+    private function getPreviousArtisticPeriods(array $periodIds): string
+    {
+        $periods = ArtisticPeriod::whereIn('id', $periodIds)
+            ->get()
+            ->map(fn($period) => "  - \"{$period->name}\" ({$period->years})")
+            ->join("\n");
+
+        return $periods;
+    }
+
+    private function getPreviousContent(array $artworkIds, array $bookIds, array $poemIds, array $musicIds, array $colorIds, array $periodIds): string
+    {
+        return "Previous Artworks:\n" . $this->getPreviousArtworks($artworkIds) .
+            "\n\nPrevious Books:\n" . $this->getPreviousBooks($bookIds) .
+            "\n\nPrevious Poems:\n" . $this->getPreviousPoems($poemIds) .
+            "\n\nPrevious Music:\n" . $this->getPreviousMusic($musicIds) .
+            "\n\nPrevious Colors:\n" . $this->getPreviousColors($colorIds) .
+            "\n\nPrevious Artistic Periods:\n" . $this->getPreviousArtisticPeriods($periodIds);
     }
 }
