@@ -3,10 +3,8 @@
 namespace App\Services\Artwork;
 
 use App\Models\Artwork;
-use Illuminate\Database\QueryException;
-use Illuminate\Database\UniqueConstraintViolationException;
+use App\Enums\ArtworkResourceEnum;
 use Illuminate\Support\Facades\Log;
-use PDOException;
 
 class ArtworkEnrichmentService
 {
@@ -54,12 +52,8 @@ class ArtworkEnrichmentService
                 if (($wikidataData && !empty($wikidataData['image_url'])) || 
                     ($wikipediaData && !empty($wikipediaData['image_url']))) {
                     $verificationStatus = true;
-                } else {
-                    Log::warning('No image found for artwork in Wikidata or Wikipedia', [
-                        'title' => $title,
-                        'artist' => $artist,
-                    ]);
                 }
+
             } catch (\Exception $e) {
                 Log::warning('Data enrichment failed, continuing with LLM data', [
                     'title' => $title,
@@ -69,11 +63,11 @@ class ArtworkEnrichmentService
             }
         }
         
-        $dataSource = 'llm';
+        $dataSource = ArtworkResourceEnum::LLM->value;
         if ($wikidataData && !empty($wikidataData['image_url'])) {
-            $dataSource = 'wikidata';
+            $dataSource = ArtworkResourceEnum::Wikidata->value;
         } elseif ($wikipediaData && !empty($wikipediaData['image_url'])) {
-            $dataSource = 'wikipedia';
+            $dataSource = ArtworkResourceEnum::Wikipedia->value;
         }
         
         $artworkData = [
@@ -101,22 +95,6 @@ class ArtworkEnrichmentService
             ],
             $artworkData
         );
-        
-        // Only log if we actually created it (not if we found existing)
-        if ($artwork->wasRecentlyCreated) {
-            Log::info('Artwork created', [
-                'artwork_id' => $artwork->id,
-                'title' => $artwork->title,
-                'verification_status' => $verificationStatus,
-                'has_image' => !empty($artworkData['image_url']),
-                'image_url' => $artworkData['image_url'] ?? null,
-            ]);
-        } else {
-            Log::info('Artwork already exists, using cached version', [
-                'artwork_id' => $artwork->id,
-                'title' => $artwork->title,
-            ]);
-        }
         
         return $artwork;
     }
