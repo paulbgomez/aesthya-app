@@ -48,6 +48,12 @@ class GenerateContentForFeeling implements ShouldQueue
         $messages = $client->getMessages()
             ->addSystemMessage($promptConfig['system'])
             ->addUserMessage($userMessage);
+
+        Log::info('Generating content for feeling', [
+            'feeling' => $this->feeling->name,
+            'user_id' => $this->moodboard->user_id,
+            'previous_moodboards_art' => $previousMoodboardsArt,
+        ]);
         
         $params = [
             'model' => $promptConfig['model'],
@@ -98,11 +104,11 @@ class GenerateContentForFeeling implements ShouldQueue
         }
 
         $artworkIds = $previousMoodboards->pluck('artwork_ids')->flatten()->unique()->values()->all();
-        $bookIds = $previousMoodboards->pluck('book_id')->flatten()->unique()->values()->all();
+        $bookIds = $previousMoodboards->pluck('book_ids')->flatten()->unique()->values()->all();
         $poemIds = $previousMoodboards->pluck('poem_id')->flatten()->unique()->values()->all();
-        $musicIds = $previousMoodboards->pluck('music_track_ids')->flatten()->unique()->values()->all();
+        $musicIds = $previousMoodboards->pluck('music_ids')->flatten()->unique()->values()->all();
         $colorIds = $previousMoodboards->pluck('color_ids')->flatten()->unique()->values()->all();
-        $periodIds = $previousMoodboards->pluck('artistic_period_ids')->flatten()->unique()->values()->all();
+        $periodIds = $previousMoodboards->pluck('artistic_period_id')->flatten()->unique()->values()->all();
         return $this->getPreviousContent($artworkIds, $bookIds, $poemIds, $musicIds, $colorIds, $periodIds);
     }
 
@@ -130,7 +136,7 @@ class GenerateContentForFeeling implements ShouldQueue
     {
         $poems = Poem::whereIn('id', $poemIds)
             ->get()
-            ->map(fn($poem) => "  - \"{$poem->title}\" by {$poem->author}")
+            ->map(fn($poem) => "  - \"{$poem->name}\" by {$poem->author}")
             ->join("\n");
 
         return $poems;

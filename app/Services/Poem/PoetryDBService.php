@@ -11,7 +11,7 @@ class PoetryDBService
 
     public function fetchPoemByAuthorAndTitle(string $author, string $title): ?array
     {
-        $params = $author.';'.$title;
+        $params = rawurlencode($author).';'.rawurlencode($title);
         $output = '/lines';
 
         try {
@@ -25,9 +25,19 @@ class PoetryDBService
                     return null;
                 }
 
+                if (array_key_exists('status', $data) || array_key_exists('reason', $data)) {
+                    return null;
+                }
+
+                $poem = $data[0] ?? null;
+
+                if (! is_array($poem) || ! array_key_exists('lines', $poem)) {
+                    return null;
+                }
+
                 Log::info('Successfully fetched poem from PoetryDB: '.$author.' - '.$title);
 
-                return $data;
+                return $poem['lines'];
             }
 
             return null;

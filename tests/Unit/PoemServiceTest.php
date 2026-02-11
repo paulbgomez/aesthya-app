@@ -29,6 +29,10 @@ it('fetches poem from poetryDb', function() {
         'author' => 'Robert Frost',
     ]);
 
+    $poem = Poem::query()->where('name', 'The Road Not Taken')->where('author', 'Robert Frost')->first();
+
     expect($result)->toBeInt();
-    expect(Poem::query()->where('name', 'The Road Not Taken')->where('author', 'Robert Frost')->exists())->toBeTrue();
+    expect($poem)->not()->toBeNull();
+    expect($poem->content)->toBeArray();
+    expect($poem->content)->toContain('Two roads diverged in a yellow wood,');
 });

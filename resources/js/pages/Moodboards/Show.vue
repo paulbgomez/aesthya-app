@@ -44,7 +44,7 @@ const props = defineProps<{
     id: number;
     title: string;
     author: string;
-    content: Array<{ lines: string[] }> | null;
+    content: Array<{ lines: string[] }> | string[] | null;
   } | null;
 }>();      
 
@@ -56,7 +56,13 @@ const poemText = computed(() => {
     return null;
   }
 
-  const sections = props.poem.content.map((entry) => entry.lines.join('\n'));
+  const firstEntry = props.poem.content[0];
+
+  if (typeof firstEntry === 'string') {
+    return (props.poem.content as string[]).join('\n');
+  }
+
+  const sections = (props.poem.content as Array<{ lines: string[] }>).map((entry) => entry.lines.join('\n'));
 
   return sections.join('\n\n');
 });
