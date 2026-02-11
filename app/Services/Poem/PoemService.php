@@ -7,6 +7,7 @@ use App\Models\Poem;
 class PoemService
 {
     public function __construct(
+        private PoetryDBService $service = new PoetryDBService
     ) {}
 
     public function processPoemData(array $poem): ?int
@@ -19,7 +20,7 @@ class PoemService
         $poemData = [
             'name' => $poem['name'],
             'author' => $poem['author'],
-            'content' => $poem['content'] ?? null,
+            'content' => $poem['content'] ?? $this->service->fetchPoemByAuthorAndTitle($poem['author'], $poem['name']),
         ];
 
         $createPoem = Poem::create($poemData);

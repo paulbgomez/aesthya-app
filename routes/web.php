@@ -3,13 +3,13 @@
 use App\Http\Controllers\Feelings\FeelingsController;
 use App\Http\Controllers\Feelings\GenerateContentController;
 use App\Http\Controllers\Moodboard\MoodboardController;
-use App\Services\Artwork\WikidataArtworkService;
+use App\Services\Poem\PoetryDBService;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
 
 Route::get('/test', function () {
-    return (new WikidataArtworkService())->findArtwork('The Starry Night');
+    return (new PoetryDBService)->fetchPoemByAuthorAndTitle('Blake', 'Tree');
 });
 
 Route::get('/', function () {
@@ -19,7 +19,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::group(['middleware' => ['auth', 'verified']], function () {
-    // Dashboard Route    
+    // Dashboard Route
     Route::get('dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');

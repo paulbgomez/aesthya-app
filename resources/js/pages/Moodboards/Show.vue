@@ -45,12 +45,22 @@ const props = defineProps<{
     id: number;
     title: string;
     author: string;
-    content: string | null;
+    content: Array<{ lines: string[] }> | null;
   } | null;
 }>();      
 
 const store = useMoodboardStore();
 const jobStatus = computed(() => store.jobStatus);
+
+const poemText = computed(() => {
+  if (!props.poem?.content) {
+    return null;
+  }
+
+  const sections = props.poem.content.map((entry) => entry.lines.join('\n'));
+
+  return sections.join('\n\n');
+});
 
 // Polling logic
 let pollingInterval: ReturnType<typeof setInterval> | null = null;
@@ -205,8 +215,8 @@ onUnmounted(() => {
               <p class="text-lg font-semibold text-white">{{ props.poem.title }}</p>
               <p class="text-sm text-slate-400">{{ props.poem.author }}</p>
             </div>
-            <p v-if="props.poem.content" class="whitespace-pre-line text-sm text-slate-300">
-              {{ props.poem.content }}
+            <p v-if="poemText" class="whitespace-pre-line text-sm text-slate-300">
+              {{ poemText }}
             </p>
           </div>
         </div>
