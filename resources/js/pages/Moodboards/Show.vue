@@ -32,7 +32,6 @@ const props = defineProps<{
     id: number;
     hexCode: string;
     name: string | null;
-    pantone: string | null;
     explanation: string | null;
   }>;
   artisticPeriod: {
@@ -239,7 +238,6 @@ onUnmounted(() => {
               <div class="flex flex-col">
                 <p class="text-sm font-semibold text-white">{{ color.name ?? 'Untitled' }}</p>
                 <p class="text-xs text-slate-400">{{ color.hexCode }}</p>
-                <p v-if="color.pantone" class="text-xs text-slate-500">Pantone {{ color.pantone }}</p>
               </div>
             </div>
             <p v-if="color.explanation" class="mt-3 text-sm text-slate-300">

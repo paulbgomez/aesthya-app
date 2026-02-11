@@ -21,7 +21,6 @@ class ColorService
             'name' => $color['name'],
             'hex' => $color['hex'] ?? null,
             'explanation' => $color['explanation'] ?? null,
-            'pantone' => $color['pantone'] ?? null,
         ];
         
         $color = Color::create($colorData);
