@@ -4,7 +4,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { MoodboardType } from '@/types/moodboard';
 import { useMoodboardStore } from '@/stores/moodboardStore';
 import { JobStatus } from '@/types/jobStatus';
-import { computed, onMounted, onUnmounted, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 
 const props = defineProps<{
   moodboard: MoodboardType;
@@ -53,6 +53,8 @@ const props = defineProps<{
 
 const store = useMoodboardStore();
 const jobStatus = computed(() => store.jobStatus);
+const activeTrackId = ref<number | null>(props.musicTracks[0]?.id ?? null);
+const activeTrack = computed(() => props.musicTracks.find((track) => track.id === activeTrackId.value) ?? null);
 
 const poemText = computed(() => {
   if (!props.poem?.content) {
@@ -94,6 +96,21 @@ watch(() => jobStatus.value, (newStatus: JobStatus) => {
         stopPolling();
     }
   }
+);
+
+watch(
+  () => props.musicTracks,
+  (tracks) => {
+    if (!tracks.length) {
+      activeTrackId.value = null;
+      return;
+    }
+
+    if (!tracks.some((track) => track.id === activeTrackId.value)) {
+      activeTrackId.value = tracks[0].id;
+    }
+  },
+  { deep: true }
 );
 
 onMounted(() => {
@@ -153,33 +170,53 @@ onUnmounted(() => {
       <div v-if="props.musicTracks.length > 0" class="mb-8">
         <h2 class="mb-4 text-2xl font-semibold text-white">Music</h2>
         <div class="rounded-xl border border-slate-800 bg-slate-900 p-6">
-          <div class="space-y-3">
+          <div class="flex flex-col gap-6">
             <div
-              v-for="track in props.musicTracks"
-              :key="track.id"
-              class="flex flex-col gap-4 border-b border-slate-800 pb-4 last:border-0 last:pb-0"
+              v-if="activeTrack && activeTrack.videoId"
+              class="overflow-hidden rounded-lg border border-slate-800 bg-slate-950"
             >
-              <div>
-                <p class="font-medium text-white">{{ track.title }}</p>
-                <p class="text-sm text-slate-400">{{ track.artist }}</p>
-                <a
-                  v-if="track.youtubeUrl"
-                  :href="track.youtubeUrl"
-                  target="_blank"
-                  rel="noreferrer"
-                  class="mt-1 inline-block text-xs text-slate-400 underline decoration-slate-600 hover:text-slate-200"
-                >
-                  Open on YouTube
-                </a>
-              </div>
               <iframe
-                v-if="track.videoId"
-                class="h-[166px] w-full"
+                :key="activeTrack.id"
+                class="h-[220px] w-full"
                 scrolling="no"
                 frameborder="no"
                 allow="encrypted-media"
-                :src="`https://www.youtube.com/embed/${track.videoId}?autoplay=1`"
+                :src="`https://www.youtube.com/embed/${activeTrack.videoId}?autoplay=1`"
               ></iframe>
+              <div class="border-t border-slate-800 px-4 py-3">
+                <p class="font-medium text-white">{{ activeTrack.title }}</p>
+                <p class="text-sm text-slate-400">{{ activeTrack.artist }}</p>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <button
+                v-for="track in props.musicTracks"
+                :key="track.id"
+                type="button"
+                class="flex w-full items-center gap-4 rounded-lg border border-slate-800 bg-slate-950/60 p-3 text-left transition hover:bg-slate-950"
+                :class="track.id === activeTrackId ? 'ring-1 ring-violet-400/60' : ''"
+                @click="activeTrackId = track.id"
+              >
+                <div class="h-12 w-20 shrink-0 overflow-hidden rounded-md border border-slate-800 bg-slate-900">
+                  <img
+                    v-if="track.thumbnailUrl"
+                    :src="track.thumbnailUrl"
+                    :alt="`${track.title} thumbnail`"
+                    class="h-full w-full object-cover"
+                  />
+                </div>
+                <div class="flex-1">
+                  <p class="font-medium text-white">{{ track.title }}</p>
+                  <p class="text-sm text-slate-400">{{ track.artist }}</p>
+                </div>
+                <span
+                  class="text-xs font-semibold uppercase tracking-wide text-slate-500"
+                  :class="track.id === activeTrackId ? 'text-violet-300' : ''"
+                >
+                  {{ track.id === activeTrackId ? 'Playing' : 'Play' }}
+                </span>
+              </button>
             </div>
           </div>
         </div>
