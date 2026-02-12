@@ -10,15 +10,16 @@ class MusicTrack extends Model
     protected $fillable = [
         'title',
         'artist',
-        'album',
-        'genre',
-        'duration',
-        'audio_url',
+        'preview_url',
+        'album_art',
+        'genres',
+        'mood_tags',
         'metadata',
-        'verified',
     ];
 
     protected $casts = [
         'metadata' => AsArrayObject::class,
+        'genres' => AsArrayObject::class,
+        'mood_tags' => AsArrayObject::class,
     ];
 }

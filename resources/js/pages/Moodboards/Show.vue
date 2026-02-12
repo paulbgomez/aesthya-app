@@ -21,6 +21,9 @@ const props = defineProps<{
     id: number;
     title: string;
     artist: string;
+    youtubeUrl: string | null;
+    videoId: string | null;
+    thumbnailUrl: string | null;
   }>;
   books: Array<{
     id: number;
@@ -154,12 +157,29 @@ onUnmounted(() => {
             <div
               v-for="track in props.musicTracks"
               :key="track.id"
-              class="flex items-center justify-between border-b border-slate-800 pb-3 last:border-0 last:pb-0"
+              class="flex flex-col gap-4 border-b border-slate-800 pb-4 last:border-0 last:pb-0"
             >
               <div>
                 <p class="font-medium text-white">{{ track.title }}</p>
                 <p class="text-sm text-slate-400">{{ track.artist }}</p>
+                <a
+                  v-if="track.youtubeUrl"
+                  :href="track.youtubeUrl"
+                  target="_blank"
+                  rel="noreferrer"
+                  class="mt-1 inline-block text-xs text-slate-400 underline decoration-slate-600 hover:text-slate-200"
+                >
+                  Open on YouTube
+                </a>
               </div>
+              <iframe
+                v-if="track.videoId"
+                class="h-[166px] w-full"
+                scrolling="no"
+                frameborder="no"
+                allow="encrypted-media"
+                :src="`https://www.youtube.com/embed/${track.videoId}?autoplay=1`"
+              ></iframe>
             </div>
           </div>
         </div>

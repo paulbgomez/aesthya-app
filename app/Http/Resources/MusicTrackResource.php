@@ -13,6 +13,9 @@ class MusicTrackResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'artist' => $this->artist,
+            'youtubeUrl' => $this->metadata['youtube_url'] ?? null,
+            'videoId' => $this->metadata['video_id'] ?? null,
+            'thumbnailUrl' => $this->album_art,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
         ];

@@ -3,11 +3,11 @@
 namespace App\Jobs;
 
 use App\Models\Moodboard;
-use App\Models\MusicTrack;
 use App\Services\ArtisticPeriod\ArtisticPeriodService;
 use App\Services\Artwork\ArtworkEnrichmentService;
 use App\Services\Book\BookService;
 use App\Services\Color\ColorService;
+use App\Services\Music\MusicService;
 use App\Services\Poem\PoemService;
 use ArrayObject;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -26,6 +26,7 @@ class ProcessGeneratedContentJob implements ShouldQueue
         ArtworkEnrichmentService $artworkService,
         BookService $bookService,
         ArtisticPeriodService $artisticPeriodService,
+        MusicService $musicService,
         PoemService $poemService,
         ColorService $colorService
     ): void {
@@ -50,7 +51,7 @@ class ProcessGeneratedContentJob implements ShouldQueue
         }
 
         $artworkIds = $this->processArtworks($content['paintings'] ?? [], $artworkService);
-        $musicIds = $this->processMusicTracks($content['music'] ?? []);
+        $musicIds = $this->processMusicTracks($content['music'] ?? [], $musicService);
         $bookIds = $this->processBooks([$content['book'] ?? []], $bookService);
         $colorIds = $this->processColors($content['colors'] ?? [], $colorService);
         $artisticPeriodId = $this->processArtisticPeriod($content['artistic_period'] ?? [], $artisticPeriodService);
@@ -79,17 +80,16 @@ class ProcessGeneratedContentJob implements ShouldQueue
         return $ids;
     }
 
-    private function processMusicTracks(array $musicTracks): array
+    private function processMusicTracks(array $musicTracks, MusicService $musicService): array
     {
         $ids = [];
 
         foreach ($musicTracks as $track) {
-            $musicTrack = MusicTrack::create([
-                'title' => $track['title'] ?? 'Unknown',
-                'artist' => $track['artist'] ?? 'Unknown',
-            ]);
+            $musicTrack = $musicService->processTrackData($track);
 
-            $ids[] = $musicTrack->id;
+            if ($musicTrack) {
+                $ids[] = $musicTrack->id;
+            }
         }
 
         return $ids;

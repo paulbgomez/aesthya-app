@@ -39,4 +39,13 @@ return [
         'api_key' => env('MISTRAL_API_KEY'),
     ],
 
+    'soundcloud' => [
+        'client_id' => env('SOUNDCLOUD_CLIENT_ID'),
+        'client_secret' => env('SOUNDCLOUD_CLIENT_SECRET'),
+    ],
+
+    'youtube' => [
+        'api_key' => env('YOUTUBE_API_KEY'),
+    ],
+
 ];
