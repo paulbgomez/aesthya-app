@@ -5,6 +5,7 @@ import { MoodboardType } from '@/types/moodboard';
 import { useMoodboardStore } from '@/stores/moodboardStore';
 import { JobStatus } from '@/types/jobStatus';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import Card from '@/components/Card.vue';
 
 const props = defineProps<{
   moodboard: MoodboardType;
@@ -145,23 +146,8 @@ onUnmounted(() => {
           <div
             v-for="artwork in props.artworks"
             :key="artwork.id"
-            class="overflow-hidden rounded-xl border border-slate-800 bg-slate-900"
           >
-            <div v-if="artwork.imageUrl" class="aspect-square overflow-hidden bg-slate-950">
-              <img
-                :src="artwork.imageUrl"
-                :alt="artwork.title"
-                class="h-full w-full object-cover"
-              />
-            </div>
-            <div v-else class="flex aspect-square items-center justify-center bg-slate-950">
-              <span class="text-slate-600">No image available</span>
-            </div>
-            <div class="p-4">
-              <h3 class="text-lg font-semibold text-white">{{ artwork.title }}</h3>
-              <p class="text-sm text-slate-400">{{ artwork.artist }}</p>
-              <p v-if="artwork.source" class="mt-2 text-xs text-slate-500">{{ artwork.source }}</p>
-            </div>
+            <Card v-if="artwork.imageUrl" :title="artwork.title" :subtitle="artwork.artist" :imageUrl="artwork.imageUrl" :description="artwork.source ?? 'No source available'" />
           </div>
         </div>
       </div>
@@ -175,14 +161,14 @@ onUnmounted(() => {
               v-if="activeTrack && activeTrack.videoId"
               class="overflow-hidden rounded-lg border border-slate-800 bg-slate-950"
             >
-              <iframe
+              <!-- <iframe
                 :key="activeTrack.id"
                 class="h-[220px] w-full"
                 scrolling="no"
                 frameborder="no"
                 allow="encrypted-media"
                 :src="`https://www.youtube.com/embed/${activeTrack.videoId}?autoplay=1`"
-              ></iframe>
+              ></iframe> -->
               <div class="border-t border-slate-800 px-4 py-3">
                 <p class="font-medium text-white">{{ activeTrack.title }}</p>
                 <p class="text-sm text-slate-400">{{ activeTrack.artist }}</p>
